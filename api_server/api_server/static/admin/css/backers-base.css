@@ -1,0 +1,18 @@
+:root {
+    --header-color: white;
+    --header-bg: #202020;
+    --primary: #ff5959;
+    --secondary: #ff365c;
+    --accent: #ff5252;
+    --link-fg: #816767;
+    --link-hover-color: #603;
+
+    --button-bg: #e65757;;
+    --button-hover-bg: #f87e7e;;
+    --default-button-bg: var(--secondary);
+    --default-button-hover-bg: #ff0000;
+    --close-button-bg: #888;
+    --close-button-hover-bg: #747474;
+
+    --selected-row: #fbffd4;
+}

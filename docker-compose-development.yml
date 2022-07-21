@@ -1,0 +1,31 @@
+version: '2'
+services:
+  server:
+    build: .
+    ports:
+      - "${HOST_API_PORT}:8000"
+    environment:
+      DJANGO_SUPERUSER_USERNAME: "${DJANGO_SUPERUSER_USERNAME}"
+      DJANGO_SUPERUSER_EMAIL: "${DJANGO_SUPERUSER_EMAIL}"
+      DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
+      DJANGO_DEBUG: "${DJANGO_DEBUG}"
+      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
+      DJANGO_ALLOWED_HOSTS: "${DJANGO_ALLOWED_HOSTS}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - ./api_server:/app/api_server
+    links:
+      - db
+    depends_on:
+      - db
+    command:
+      ["wait-for-it", "db:5432", "--", "./spin-up.sh"]
+
+  db:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+
+# uncomment this to expose database to the host
+#    ports:
+#      - "${HOST_DB_PORT}:5432"
