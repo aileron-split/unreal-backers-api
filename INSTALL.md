@@ -13,12 +13,13 @@
 		wget https://github.com/aileron-split/unreal-backers-api/blob/7caac72c849e765f8647dea8c8c92f0de1e9794a/.env-template -O .env
 
 - Set environment variables (or update the variables in the .env file):
-	- POSTGRES_PASSWORD
-	- DJANGO_SUPERUSER_PASSWORD
-	- HOST_ADDRESS
-	- HOST_API_PORT
+	
+		POSTGRES_PASSWORD=
+		DJANGO_SUPERUSER_PASSWORD=
+		HOST_ADDRESS=
+		HOST_API_PORT=
 
-- Run docker-compose the usual way:
+- Run docker-compose the usual way, for example:
 		
 		docker-compose up
 
