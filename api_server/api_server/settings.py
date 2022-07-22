@@ -21,7 +21,7 @@ def parse_bool(val):
 
 def parse_list(val):
     if type(val) == str:
-        return [s.strip() for s in val.split(',')]
+        return [s.strip() for s in val.split(',') if s]
     return val
 
 
@@ -45,10 +45,8 @@ SECRET_KEY = config(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DJANGO_DEBUG', default=True, cast=parse_bool)
 
-HOST_ADDRESS = config('HOST_ADDRESS')
-
-ALLOWED_HOSTS = ['localhost']
-CSRF_TRUSTED_ORIGINS = [HOST_ADDRESS]
+ALLOWED_HOSTS = ['localhost'] + config('ALLOWED_HOSTS', default=[], cast=parse_list)
+CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default=[], cast=parse_list)
 
 # Application definition
 

@@ -3,7 +3,8 @@ import json
 import patreon
 from django.conf import settings
 from django.contrib import admin
-from django.db import IntegrityError
+from django.db import IntegrityError, models
+from django.forms import PasswordInput
 from django.utils.text import slugify
 
 from config.models import APIVariable
@@ -60,6 +61,10 @@ class GameCodeAdmin(admin.ModelAdmin):
     override_required_fields = ('licensee', 'code_tier', 'version', 'instance_id', )
 
     actions = ['archive_selected_codes']
+
+    formfield_overrides = {
+        models.CharField: {'widget': PasswordInput},
+    }
 
     @admin.action(
         description='Archive selected codes',

@@ -10,8 +10,11 @@ services:
       DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
       DJANGO_DEBUG: "${DJANGO_DEBUG}"
       DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
-      HOST_ADDRESS: "${HOST_ADDRESS}"
+      ALLOWED_HOSTS: "${ALLOWED_HOSTS}"
+      CSRF_TRUSTED_ORIGINS: "${CSRF_TRUSTED_ORIGINS}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - ./files:./files
     links:
       - db
     depends_on:
@@ -23,6 +26,8 @@ services:
     image: "postgres:latest"
     environment:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
 
 # uncomment this to expose database to the host
 #    ports:

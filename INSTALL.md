@@ -6,22 +6,23 @@
 
 - Download docker-compose.yml file:
 
-		wget https://github.com/aileron-split/unreal-backers-api/blob/7caac72c849e765f8647dea8c8c92f0de1e9794a/docker-compose.yml
+        wget https://github.com/aileron-split/unreal-backers-api/blob/7caac72c849e765f8647dea8c8c92f0de1e9794a/docker-compose.yml
 
 - Alternatively, download .env file template:
 
-		wget https://github.com/aileron-split/unreal-backers-api/blob/7caac72c849e765f8647dea8c8c92f0de1e9794a/.env-template -O .env
+        wget https://github.com/aileron-split/unreal-backers-api/blob/7caac72c849e765f8647dea8c8c92f0de1e9794a/.env-template -O .env
 
 - Set environment variables (or update the variables in the .env file):
 	
-		POSTGRES_PASSWORD=
-		DJANGO_SUPERUSER_PASSWORD=
-		HOST_ADDRESS=
-		HOST_API_PORT=
+        POSTGRES_PASSWORD=
+        DJANGO_SUPERUSER_PASSWORD=
+        ALLOWED_HOSTS=
+        CSRF_TRUSTED_ORIGINS=
+        HOST_API_PORT=
 
 - Run docker-compose the usual way, for example:
 		
-		docker-compose up
+        docker-compose up
 
 ### 2) Configure Patreon Keys
 
