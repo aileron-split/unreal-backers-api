@@ -1,6 +1,6 @@
-# Crowd Benefits Plugin Setup
+# Backers Plugin Setup
 
-## Setup Benefits Server
+## Setup Backers API Server
 
 ### 1) Install Docker Images
 
