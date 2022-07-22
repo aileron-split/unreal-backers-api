@@ -42,7 +42,9 @@ class APIVariableAdmin(admin.ModelAdmin):
 
         info = fetch_patreon_info(request)
         extra_context['patreon_info'] = info
-        extra_context['patreon_redirect_uri'] = settings.HOST_ADDRESS + reverse('patreon_authorize')
+
+        host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost'
+        extra_context['patreon_redirect_uri'] = host_address + reverse('patreon_authorize')
 
         return super(APIVariableAdmin, self).changelist_view(
             request, extra_context=extra_context
