@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.urls import reverse
 
@@ -41,7 +42,7 @@ class APIVariableAdmin(admin.ModelAdmin):
 
         info = fetch_patreon_info(request)
         extra_context['patreon_info'] = info
-        extra_context['patreon_redirect_uri'] = request.build_absolute_uri(reverse('patreon_authorize'))
+        extra_context['patreon_redirect_uri'] = settings.HOST_ADDRESS + reverse('patreon_authorize')
 
         return super(APIVariableAdmin, self).changelist_view(
             request, extra_context=extra_context
