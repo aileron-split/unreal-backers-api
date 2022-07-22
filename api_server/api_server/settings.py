@@ -45,8 +45,9 @@ SECRET_KEY = config(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DJANGO_DEBUG', default=True, cast=parse_bool)
 
-ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default=['localhost'], cast=parse_list)
-
+HOST_ADDRESS = config('HOST_ADDRESS', default='')
+ALLOWED_HOSTS = ['localhost'] + ([HOST_ADDRESS] if HOST_ADDRESS else [])
+CSRF_TRUSTED_ORIGINS = ALLOWED_HOSTS
 
 # Application definition
 
@@ -58,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'config',
     'game',
     'patreon_auth',
@@ -67,6 +69,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.Cors'
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',

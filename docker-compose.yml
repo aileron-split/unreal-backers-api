@@ -10,10 +10,8 @@ services:
       DJANGO_SUPERUSER_PASSWORD: "${DJANGO_SUPERUSER_PASSWORD}"
       DJANGO_DEBUG: "${DJANGO_DEBUG}"
       DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
-      DJANGO_ALLOWED_HOSTS: "${DJANGO_ALLOWED_HOSTS}"
+      HOST_ADDRESS: "${HOST_ADDRESS}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-    volumes:
-      - ./api_server:/app/api_server
     links:
       - db
     depends_on:
