@@ -22,7 +22,8 @@
 
 - Run docker-compose the usual way, for example:
 
-      docker-compose up
+      docker-compose pull
+      docker-compose up -d
 
 - Note: Here is a list of paths which need to be exposed through proxy:
 
