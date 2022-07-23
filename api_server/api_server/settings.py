@@ -21,7 +21,7 @@ def parse_bool(val):
 
 def parse_list(val):
     if type(val) == str:
-        return [s.strip() for s in val.split(',') if s]
+        return [s.strip().rstrip('/') for s in val.split(',') if s]
     return val
 
 
