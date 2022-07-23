@@ -52,5 +52,7 @@ DEFAULT_API_CONFIG_LINES = [
     {'key': 'PATREON_CLIENT_ID', 'default': '', 'desc': ''},
     {'key': 'PATREON_CLIENT_SECRET', 'default': '', 'desc': ''},
     {'key': 'PATREON_ACCESS_TOKEN', 'default': '', 'desc': ''},
+    {'key': 'TERMS_CONDITIONS_URL', 'default': '', 'desc': ''},
+    {'key': 'PRIVACY_POLICY_URL', 'default': '', 'desc': ''},
 ]
 

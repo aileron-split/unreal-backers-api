@@ -38,17 +38,17 @@ def authorize(request):
     pledges = user.relationship('pledges')
     pledge = pledges[0] if pledges and len(pledges) > 0 else None
 
-    # Create/fetch licensee
+    # Create/fetch backer
     try:
-        licensee = Licensee.get_patreon(patreon_user=user, patreon_pledge=pledge)
+        backer = Backer.get_patreon(patreon_user=user, patreon_pledge=pledge)
     except ObjectDoesNotExist:
-        licensee = None
+        backer = None
 
-    if licensee is None:
-        # Could not create licensee
-        return HttpResponseBadRequest('Could not create licensee')
+    if backer is None:
+        # Could not create backer
+        return HttpResponseBadRequest('Could not create backer')
 
-    # If pledge is valid create the code for the licensee
+    # If pledge is valid create the code for the backer
     request_body = request.GET['state']
     version_hash = request_body[-40:]
     decrypted_message = GameCode.decode_request(request_body=request_body.encode('utf-8'))
@@ -72,20 +72,29 @@ def authorize(request):
     except ObjectDoesNotExist:
         campaign_title = 'Unreal Engine Game'
 
+    try:
+        terms_conditions_url = APIVariable.objects.get(key='TERMS_CONDITIONS_URL').value
+        privacy_policy_url = APIVariable.objects.get(key='PRIVACY_POLICY_URL').value
+    except ObjectDoesNotExist:
+        terms_conditions_url = ''
+        privacy_policy_url = ''
+
     ctx = {
         'state': request_body,
         'project_title': campaign_title,
+        'terms_conditions_url': terms_conditions_url,
+        'privacy_policy_url': privacy_policy_url,
     }
     ctx.update(decrypted_message)
 
     try:
         auth_code = GameCode(
             note=request_body,
-            licensee=licensee
+            backer=backer
         )
         auth_code.clean()
         auth_code.save()
-        # Code created, refresh the license
+        # Code created, refresh the backer info
         return render(request=request, template_name='register_success.html', context=ctx)
     except ValidationError as e:
         # Could not create the code (%s) % e.message

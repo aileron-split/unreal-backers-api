@@ -19,7 +19,7 @@ def new_aes_256_cbc():
     return os.urandom(32)
 
 
-class Licensee(models.Model):
+class Backer(models.Model):
     url = models.URLField(
         blank=False, unique=True,
         help_text='URL of the person associated with this code (Patreon.com personal page)')
@@ -31,7 +31,7 @@ class Licensee(models.Model):
         help_text='Game benefits tier (derived from Patreon.com tiers)')
     display_name = models.CharField(
         max_length=100,
-        help_text='Licensee name displayed in the simulator UI')
+        help_text='Backer name displayed in the game UI')
     note = models.TextField(default='', blank=True)
 
     datetime: datetime = models.DateTimeField(default=timezone.now, help_text='Created timestamp')
@@ -42,23 +42,23 @@ class Licensee(models.Model):
     @staticmethod
     def get_patreon(patreon_user, patreon_pledge):
         # Find the user if already registered or create a new one if not
-        licensee, was_created = Licensee.objects.get_or_create(url=patreon_user.attribute('url'))
+        backer, was_created = Backer.objects.get_or_create(url=patreon_user.attribute('url'))
 
-        # Update the licensee information
-        licensee.display_name = patreon_user.attribute('vanity') or patreon_user.attribute('full_name')
-        licensee.email = patreon_user.attribute('email')
+        # Update backer information
+        backer.display_name = patreon_user.attribute('vanity') or patreon_user.attribute('full_name')
+        backer.email = patreon_user.attribute('email')
 
         # Update the tier
         try:
             reward_id = patreon_pledge.json_data['relationships']['reward']['data']['id']
-            licensee.tier = PatreonTier.objects.get(reward_id=reward_id).game_tier
+            backer.tier = PatreonTier.objects.get(reward_id=reward_id).game_tier
         except AttributeError:
-            licensee.tier = None
+            backer.tier = None
 
         # Save updated info
-        licensee.save()
+        backer.save()
 
-        return licensee
+        return backer
 
 
 class ArchivedCode(models.Model):
@@ -68,7 +68,7 @@ class ArchivedCode(models.Model):
     code_tier = models.ForeignKey(
         GameTier, on_delete=models.RESTRICT, blank=True, null=True,
         help_text='Game benefits tier stored on code creation')
-    licensee = models.ForeignKey(Licensee, on_delete=models.RESTRICT)
+    backer = models.ForeignKey(Backer, on_delete=models.RESTRICT)
     version = models.ForeignKey(GameVersion, on_delete=models.RESTRICT)
     note = models.TextField(default='', blank=True)
     auth_signature = models.TextField(
@@ -80,6 +80,9 @@ class ArchivedCode(models.Model):
         default=timezone.now,
         help_text='Archived timestamp')
 
+    class Meta:
+        verbose_name_plural = 'Code archive'
+
 
 class GameCode(models.Model):
     instance_id = models.CharField(
@@ -88,7 +91,7 @@ class GameCode(models.Model):
     code_tier: GameTier = models.ForeignKey(
         GameTier, on_delete=models.RESTRICT, blank=True, null=True,
         help_text='Game benefits tier stored on code creation')
-    licensee: Licensee = models.ForeignKey(Licensee, on_delete=models.CASCADE)
+    backer: Backer = models.ForeignKey(Backer, on_delete=models.CASCADE)
     version: GameVersion = models.ForeignKey(GameVersion, on_delete=models.CASCADE)
     note = models.TextField(
         default='', blank=True,
@@ -101,6 +104,9 @@ class GameCode(models.Model):
     datetime: datetime = models.DateTimeField(
         default=timezone.now,
         help_text='Created timestamp')
+
+    class Meta:
+        verbose_name_plural = 'Live codes'
 
     def clean(self):
         if not hasattr(self, 'instance_id') or len(self.instance_id) == 0:
@@ -123,12 +129,12 @@ class GameCode(models.Model):
         if not hasattr(self, 'version') or not self.version:
             raise ValidationError('Version is required')
 
-        if not hasattr(self, 'licensee') or not self.licensee:
-            raise ValidationError('Licensee is required')
+        if not hasattr(self, 'backer') or not self.backer:
+            raise ValidationError('Backer is required')
 
         if not hasattr(self, 'code_tier') or not self.code_tier:
-            if self.licensee.tier is not None:
-                self.code_tier = self.licensee.tier
+            if self.backer.tier is not None:
+                self.code_tier = self.backer.tier
             else:
                 raise ValidationError('A valid Patreon subscription is required')
 
@@ -159,7 +165,7 @@ class GameCode(models.Model):
         return '|'.join((
             self.instance_id,
             self.code_tier.tier_code,
-            self.licensee.display_name,
+            self.backer.display_name,
             self.version.version_hash,
             self.datetime.strftime("%Y-%m-%d"),
         ))
@@ -168,7 +174,7 @@ class GameCode(models.Model):
         ArchivedCode(
             instance_id=self.instance_id,
             code_tier=self.code_tier,
-            licensee=self.licensee,
+            backer=self.backer,
             version=self.version,
             note=self.note,
             auth_signature=self.auth_signature,

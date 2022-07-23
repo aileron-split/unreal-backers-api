@@ -54,7 +54,7 @@ def code(request):
 
 
 def register(request):
-    request_body = request.GET['r']
+    request_body = request.GET.get('r', '')
     version_hash = request_body[-40:]
     decrypted_message = GameCode.decode_request(request_body=request_body.encode('utf-8'))
 
@@ -79,11 +79,20 @@ def register(request):
     except ObjectDoesNotExist:
         campaign_title = 'Unreal Engine Game'
 
+    try:
+        terms_conditions_url = APIVariable.objects.get(key='TERMS_CONDITIONS_URL').value
+        privacy_policy_url = APIVariable.objects.get(key='PRIVACY_POLICY_URL').value
+    except ObjectDoesNotExist:
+        terms_conditions_url = ''
+        privacy_policy_url = ''
+
     ctx = {
         'state': quote(request.GET['r']),
         'client_id': client_id,
         'redirect_uri': redirect_uri,
         'project_title': campaign_title,
+        'terms_conditions_url': terms_conditions_url,
+        'privacy_policy_url': privacy_policy_url,
     }
     ctx.update(decrypted_message)
     return render(

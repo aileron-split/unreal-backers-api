@@ -12,16 +12,16 @@
         <h4>{{project_title}}</h4>
         <hr><br>
         <p>
-            Connect {{project_title}} to your Patreon account to enable patron benefits in your simulator installation ({{note}}):
+            Connect {{project_title}} to your Patreon account to enable patron benefits in your game installation ({{note}}):
         </p>
         <a style="text-decoration: none;" href="https://www.patreon.com/oauth2/authorize?response_type=code&client_id={{client_id}}&redirect_uri={{redirect_uri}}&state={{state}}">
             <button type="button" class="btn btn-primary btn-lg btn-block" >CONNECT</button>
         </a>
         <br>
         <hr>
-        <a href="/documents/terms-conditions.html">Terms and Conditions</a>
+        <a href="{{terms_conditions_url}}">Terms and Conditions</a>
         -
-        <a href="/documents/privacy-policy.html">Privacy Policy</a>
+        <a href="{{privacy_policy_url}}">Privacy Policy</a>
     </main>
 </body>
 </html>
