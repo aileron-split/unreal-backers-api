@@ -12,4 +12,10 @@ from config.models import GameTier
 def tiers(request):
     tiers_list = ['---,"TierCode","TierLabel"'] +\
                  [f'"{tier.tier_code}","{tier.tier_code}","{tier.tier_label}"' for tier in GameTier.objects.all()]
-    return HttpResponse('\n'.join(tiers_list), content_type='text/csv; charset=utf-8')
+    return HttpResponse(
+        '\n'.join(tiers_list),
+        content_type='text/csv; charset=utf-8',
+        headers={
+            'content-disposition': 'attachment;filename=GameTiersConfiguration.csv',
+        }
+    )
