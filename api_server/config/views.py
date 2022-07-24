@@ -10,6 +10,6 @@ from config.models import GameTier
     login_url='/admin/login'
 )
 def tiers(request):
-    tiers_list = ['---,"code","label";'] +\
-                 [f'"{tier.tier_code}","{tier.tier_code}","{tier.tier_label}";' for tier in GameTier.objects.all()]
+    tiers_list = ['---,"TierCode","TierLabel"'] +\
+                 [f'"{tier.tier_code}","{tier.tier_code}","{tier.tier_label}"' for tier in GameTier.objects.all()]
     return HttpResponse('\n'.join(tiers_list), content_type='text/csv; charset=utf-8')
