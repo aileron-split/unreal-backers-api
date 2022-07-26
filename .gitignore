@@ -1,10 +1,10 @@
 *.pyc
 
-
 /.idea
 
 /venv/
-/.env
 /static/
+/files/
 
-docker-compose-testing.yml
+/.env
+/docker-compose-testing.yml
