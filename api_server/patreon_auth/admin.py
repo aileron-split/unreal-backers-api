@@ -1,4 +1,5 @@
 import patreon
+from django.conf import settings
 from django.contrib import admin, messages
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -110,3 +111,12 @@ class PatreonTierAdmin(admin.ModelAdmin):
         return super(PatreonTierAdmin, self).changelist_view(
             request, extra_context=extra_context
         )
+
+
+def template_extra_info(request):
+    extra_info = fetch_patreon_info(request)
+
+    host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost'
+    extra_info['redirect_uri'] = host_address + reverse('patreon_authorize')
+
+    return extra_info

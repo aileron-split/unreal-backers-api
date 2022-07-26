@@ -13,6 +13,7 @@ services:
       ALLOWED_HOSTS: "${ALLOWED_HOSTS}"
       CSRF_TRUSTED_ORIGINS: "${CSRF_TRUSTED_ORIGINS}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      BACKER_PLATFORMS: "${BACKER_PLATFORMS}"
     volumes:
       - ./api_server:/app/api_server
     links:

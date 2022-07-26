@@ -1,8 +1,9 @@
+import importlib
+
 from django.conf import settings
 from django.contrib import admin
 from django.urls import reverse
 
-from patreon_auth.admin import fetch_patreon_info
 from .models import APIVariable, GameVersion, GameTier, ServerVariable
 
 
@@ -39,12 +40,15 @@ class APIVariableAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
+        extra_context['config_extra'] = template_extra_info(request) or {}
 
-        info = fetch_patreon_info(request)
-        extra_context['patreon_info'] = info
-
-        host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost'
-        extra_context['patreon_redirect_uri'] = host_address + reverse('patreon_authorize')
+        for platform in settings.BACKER_PLATFORMS:
+            platform_admin = importlib.import_module(f'{platform}_auth.admin')
+            extra_context[f'{platform}_info'] = f'{platform}_auth.admin'
+            try:
+                extra_context[f'{platform}_info'] = platform_admin.template_extra_info(request)
+            except AttributeError:
+                pass  # Skip if template_extra_info is not implemented
 
         return super(APIVariableAdmin, self).changelist_view(
             request, extra_context=extra_context
@@ -59,3 +63,7 @@ class ServerVariableAdmin(admin.ModelAdmin):
     search_fields = ('key', 'value')
 
     readonly_fields = ('tooltip',)
+
+
+def template_extra_info(request):
+    return None

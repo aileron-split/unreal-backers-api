@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import sys
 
 from pathlib import Path
 from decouple import AutoConfig
@@ -49,6 +50,7 @@ ALLOWED_HOSTS = ['localhost'] + config('ALLOWED_HOSTS', default=[], cast=parse_l
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default=[], cast=parse_list)
 
 # Application definition
+BACKER_PLATFORMS = config('BACKER_PLATFORMS', default=['patreon'], cast=parse_list)
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
@@ -60,8 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'config',
     'game',
-    'patreon_auth',
-]
+] + [f'{platform}_auth' for platform in BACKER_PLATFORMS]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -113,6 +114,10 @@ DATABASES = {
         'HOST': 'db',
     }
 }
+
+if 'test' in sys.argv or 'test_coverage' in sys.argv:
+    # Covers regular testing and django-coverage
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
 
 
 # Password validation
