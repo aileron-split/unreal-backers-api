@@ -1,7 +1,7 @@
 version: '2'
 services:
   server:
-    image: "aileronsplit/unreal-backers-api_server:latest"
+    image: "aileronsplit/unreal-backers-api:latest"
     ports:
       - "${HOST_API_PORT}:8000"
     environment:
