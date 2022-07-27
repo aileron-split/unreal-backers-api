@@ -8,7 +8,7 @@ class BackerAdmin(admin.ModelAdmin):
     list_display = ('display_name', 'url', 'email', 'tier', 'datetime', 'note')
     list_display_links = ('display_name',)
 
-    list_filter = ('display_name', 'url', 'email', 'tier',)
+    list_filter = ('tier',)
     search_fields = ('display_name', 'url', 'email', 'note',)
     date_hierarchy = 'datetime'
 

@@ -16,6 +16,7 @@ services:
       BACKER_PLATFORMS: "${BACKER_PLATFORMS}"
     volumes:
       - ./api_server:/app/api_server
+      - ./files:/app/files
     links:
       - db
     depends_on:

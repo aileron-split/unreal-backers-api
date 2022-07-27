@@ -62,15 +62,16 @@ Create Patreon API Key at https://www.patreon.com/portal/registration/register-c
 - Copy Game Version string from the API Admin
 - Copy Game Version Public key from the API Admin
 
-### Game Tiers Table
-
-- Download tiers.csv file from Game Tiers page in the API Admin interface
-- Import tiers.csv into Unreal using GameTiersStruct
-- Load the table into the Plugin Subsystem (eg. in Game Instance BP)
-
 ### Backers Login Widget
 
 - Place Backers Login widget anywhere in your game UI
+
+### Optionally: Import Game Tiers Table
+
+Optionally, you can download and import Game Tiers to 
+
+- Download .csv file from Game Tiers page in the API Admin interface
+- Import the `GameTiersConfiguration.csv` file into Unreal using `BackersGameTiersStruct` as data table row type
 
 ### Using Backers Subsystem
 

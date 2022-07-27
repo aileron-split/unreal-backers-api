@@ -113,10 +113,13 @@ class PatreonTierAdmin(admin.ModelAdmin):
         )
 
 
+def get_patreon_redirect_uri():
+    host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost'
+    return host_address + reverse('patreon_authorize')
+
+
 def template_extra_info(request):
     extra_info = fetch_patreon_info(request)
-
-    host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost'
-    extra_info['redirect_uri'] = host_address + reverse('patreon_authorize')
+    extra_info['redirect_uri'] = get_patreon_redirect_uri()
 
     return extra_info

@@ -1,8 +1,5 @@
-from urllib.parse import quote
-
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
-from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import GameCode
@@ -51,54 +48,6 @@ def code(request):
     except (ValueError, TypeError):
         # If key in decrypted_message is incompatible
         return HttpResponseBadRequest('Bad Request')
-
-
-def register(request):
-    request_body = request.GET.get('r', '')
-    version_hash = request_body[-40:]
-    decrypted_message = GameCode.decode_request(request_body=request_body.encode('utf-8'))
-
-    if not decrypted_message:
-        return HttpResponseBadRequest('Bad Request')
-
-    try:
-        GameCode.unregister(
-            decrypted_message=decrypted_message,
-            version_hash=version_hash,
-        )
-    except ObjectDoesNotExist:
-        pass
-    except ValueError:
-        pass
-
-    client_id = APIVariable.objects.get(key='PATREON_CLIENT_ID').value
-    redirect_uri = APIVariable.objects.get(key='PATREON_REDIRECT_URI').value
-
-    try:
-        campaign_title = APIVariable.objects.get(key='CAMPAIGN_TITLE').value
-    except ObjectDoesNotExist:
-        campaign_title = 'Unreal Engine Game'
-
-    try:
-        terms_conditions_url = APIVariable.objects.get(key='TERMS_CONDITIONS_URL').value
-        privacy_policy_url = APIVariable.objects.get(key='PRIVACY_POLICY_URL').value
-    except ObjectDoesNotExist:
-        terms_conditions_url = ''
-        privacy_policy_url = ''
-
-    ctx = {
-        'state': quote(request.GET['r']),
-        'client_id': client_id,
-        'redirect_uri': redirect_uri,
-        'project_title': campaign_title,
-        'terms_conditions_url': terms_conditions_url,
-        'privacy_policy_url': privacy_policy_url,
-    }
-    ctx.update(decrypted_message)
-    return render(
-        request=request, template_name='patreon.html',
-        context=ctx
-    )
 
 
 @csrf_exempt
