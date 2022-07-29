@@ -67,10 +67,9 @@ def authorize(request):
     # Request pledge and user info from Patreon
     client_id = APIVariable.objects.get(key='PATREON_CLIENT_ID').value
     client_secret = APIVariable.objects.get(key='PATREON_CLIENT_SECRET').value
-    redirect_uri = request.build_absolute_uri(reverse('patreon_authorize'))
 
     oauth_client = OAuth(client_id, client_secret)
-    tokens = oauth_client.get_tokens(request.GET['code'], redirect_uri)
+    tokens = oauth_client.get_tokens(request.GET['code'], get_patreon_redirect_uri())
 
     if 'access_token' not in tokens:
         # Bad Patreon API token
