@@ -9,7 +9,7 @@ from patreon import OAuth, API
 
 from config.models import APIVariable
 from game.models import GameCode, Backer
-from patreon_auth.admin import get_patreon_redirect_uri
+from patreon_auth.admin import get_patreon_redirect_uri, fetch_patreon_info
 
 
 def register(request):
@@ -134,6 +134,7 @@ def authorize(request):
         'project_title': campaign_title,
         'terms_conditions_url': terms_conditions_url,
         'privacy_policy_url': privacy_policy_url,
+        'patreon_info': fetch_patreon_info(request=request),
     }
     ctx.update(decrypted_message)
 
@@ -146,6 +147,6 @@ def authorize(request):
         auth_code.save()
         # Code created, refresh the backer info
         return render(request=request, template_name='register_success.html', context=ctx)
-    except ValidationError as e:
+    except ValidationError:
         # Could not create the code (%s) % e.message
         return render(request=request, template_name='become_patron.html', context=ctx)
