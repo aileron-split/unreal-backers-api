@@ -8,7 +8,7 @@ from django.urls import reverse
 from patreon import OAuth, API
 
 from config.models import APIVariable
-from game.models import GameCode
+from game.models import GameCode, Backer
 from patreon_auth.admin import get_patreon_redirect_uri
 
 
