@@ -2,6 +2,8 @@ import importlib
 
 from django.conf import settings
 from django.contrib import admin
+from django.db import models
+from django.forms import TextInput
 from django.urls import reverse
 
 from .models import APIVariable, GameVersion, GameTier, ServerVariable
@@ -37,6 +39,10 @@ class APIVariableAdmin(admin.ModelAdmin):
     search_fields = ('key', 'value')
 
     readonly_fields = ('tooltip',)
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '80'})}
+    }
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}

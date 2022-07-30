@@ -28,7 +28,5 @@ services:
     image: "postgres:latest"
     environment:
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-
-# uncomment this to expose database to the host
-#    ports:
-#      - "${HOST_DB_PORT}:5432"
+    ports:
+      - "${HOST_DB_PORT}:5432"

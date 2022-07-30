@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from patreon import OAuth, API
 
-from config.models import APIVariable
+from config.models import APIVariable, get_api_vars
 from game.models import GameCode, Backer
 from patreon_auth.admin import get_patreon_redirect_uri, fetch_patreon_info
 
@@ -64,9 +64,11 @@ def authorize(request):
         # Bad Request Params
         return HttpResponseBadRequest('Bad request params')
 
+    api_vars = get_api_vars()
+
     # Request pledge and user info from Patreon
-    client_id = APIVariable.objects.get(key='PATREON_CLIENT_ID').value
-    client_secret = APIVariable.objects.get(key='PATREON_CLIENT_SECRET').value
+    client_id = api_vars.get('PATREON_CLIENT_ID', '')
+    client_secret = api_vars.get('PATREON_CLIENT_SECRET', '')
 
     oauth_client = OAuth(client_id, client_secret)
     tokens = oauth_client.get_tokens(request.GET['code'], get_patreon_redirect_uri())
@@ -84,6 +86,15 @@ def authorize(request):
     except AttributeError:
         # Unable to access user information
         return HttpResponseBadRequest('Unable to access user information')
+
+    if user.id() == api_vars.get('PATREON_CREATOR_ID', ''):
+        # it's the creator so access_token is invalidated
+        api_token, _ = APIVariable.objects.get_or_create(key='PATREON_ACCESS_TOKEN')
+        api_token.value = access_token
+        api_token.save()
+        api_refresh_token, _ = APIVariable.objects.get_or_create(key='PATREON_REFRESH_TOKEN')
+        api_refresh_token.value = tokens.get('refresh_token', '')
+        api_refresh_token.save()
 
     pledges = user.relationship('pledges')
     pledge = pledges[0] if pledges and len(pledges) > 0 else None
@@ -117,24 +128,12 @@ def authorize(request):
     except ValueError:
         pass  # Silently ignore if wasn't able to unregister previous code
 
-    try:
-        campaign_title = APIVariable.objects.get(key='CAMPAIGN_TITLE').value
-    except ObjectDoesNotExist:
-        campaign_title = 'Unreal Engine Game'
-
-    try:
-        terms_conditions_url = APIVariable.objects.get(key='TERMS_CONDITIONS_URL').value
-        privacy_policy_url = APIVariable.objects.get(key='PRIVACY_POLICY_URL').value
-    except ObjectDoesNotExist:
-        terms_conditions_url = ''
-        privacy_policy_url = ''
-
     ctx = {
         'state': request_body,
-        'project_title': campaign_title,
-        'terms_conditions_url': terms_conditions_url,
-        'privacy_policy_url': privacy_policy_url,
-        'patreon_info': fetch_patreon_info(request=request),
+        'project_title': api_vars.get('CAMPAIGN_TITLE', 'Unreal Engine Game'),
+        'terms_conditions_url': api_vars.get('TERMS_CONDITIONS_URL', ''),
+        'privacy_policy_url': api_vars.get('PRIVACY_POLICY_URL', ''),
+        'creator_id': api_vars.get('PATREON_CREATOR_ID', ''),
     }
     ctx.update(decrypted_message)
 

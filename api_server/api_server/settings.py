@@ -111,14 +111,15 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': config('POSTGRES_PASSWORD', default=''),
-        'HOST': 'db',
+        'HOST': config('POSTGRES_HOST', default='db'),
+        'PORT': config('POSTGRES_PORT', default='5432'),
     }
 }
 
 if 'test' in sys.argv or 'test_coverage' in sys.argv:
     # Covers regular testing and django-coverage
     DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'
-
+    DATABASES['default']['NAME'] = BASE_DIR / 'db.sqlite3'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators

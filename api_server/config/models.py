@@ -1,3 +1,4 @@
+import json
 from hashlib import sha1
 from os import makedirs
 
@@ -8,6 +9,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
+from patreon.jsonapi.parser import JSONAPIParser
 
 
 class GameVersion(models.Model):
@@ -104,27 +106,42 @@ class APIVariable(models.Model):
 
     def clean(self):
         # Automagically set Campaign Title from Patreon if available
-        if self.key == 'PATREON_ACCESS_TOKEN' and not APIVariable.objects.filter(key='CAMPAIGN_TITLE').exists():
+        if self.key == 'PATREON_ACCESS_TOKEN':
             api_client = patreon.API(access_token=self.value)
             if api_client:
                 campaign_response = api_client.fetch_campaign(includes=('creator',))
-                try:
-                    campaign = campaign_response.data()[0]
-                    title = APIVariable(
-                        key='CAMPAIGN_TITLE',
-                        value=campaign.attributes().get('creation_name', 'Creation Title')
-                    )
-                    title.save()
-                except AttributeError:
-                    print('Failed setting CAMPAIGN_TITLE')
+                if type(campaign_response) is JSONAPIParser:
+                    if not APIVariable.objects.filter(key='CAMPAIGN_TITLE').exists():
+                        try:
+                            campaign = campaign_response.data()[0]
+                            title = APIVariable(
+                                key='CAMPAIGN_TITLE',
+                                value=campaign.attributes().get('creation_name', 'Creation Title')
+                            )
+                            title.save()
+                        except AttributeError:
+                            # Failed setting CAMPAIGN_TITLE
+                            pass
+                    creator_id, _ = APIVariable.objects.get_or_create(key='PATREON_CREATOR_ID')
+                    creator_id.value = campaign_response.json_data['data'][0]['relationships']['creator']['data']['id']
+                    creator_id.save()
         else:
-            print('Skip setting CAMPAIGN_TITLE')
+            # Skip setting CAMPAIGN_TITLE
+            pass
 
 
-def add_default_api_vars(api_vars):
-    for line in api_vars:
+def add_default_api_vars(default_api_vars):
+    for line in default_api_vars:
         obj, created = APIVariable.objects.get_or_create(key=line['key'])
         if created:
             obj.value = line['default']
             obj.tooltip = line['desc']
             obj.save()
+
+
+def get_api_vars():
+    return {v.key: v.value for v in APIVariable.objects.all()}
+
+
+def get_server_vars():
+    return {v.key: v.value for v in ServerVariable.objects.all()}
