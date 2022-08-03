@@ -8,6 +8,7 @@ from django.utils.text import slugify
 from patreon import OAuth
 
 from config.models import APIVariable, GameTier, add_default_api_vars, get_api_vars
+from config.admin import get_api_uri
 from .models import PatreonTier, DEFAULT_API_CONFIG_LINES, get_patreon_api
 
 
@@ -111,7 +112,7 @@ class PatreonTierAdmin(admin.ModelAdmin):
 
 
 def get_patreon_redirect_uri():
-    host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost:8000'
+    host_address = get_api_uri()
     return host_address + reverse('patreon_authorize')
 
 

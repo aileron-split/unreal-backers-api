@@ -17,9 +17,14 @@ class GameVersionAdmin(admin.ModelAdmin):
     search_fields = ('version', 'note',)
     date_hierarchy = 'datetime'
 
-    fields = ('version', 'version_hash', 'public_key', 'note', 'datetime',)
+    fields = ('version', 'api_uri', 'version_hash', 'public_key', 'note', 'datetime',)
 
-    readonly_fields = ('version_hash', 'public_key')
+    readonly_fields = ('api_uri', 'version_hash', 'public_key')
+
+    @staticmethod
+    def api_uri(obj):
+        host_address = get_api_uri()
+        return f'{host_address}/'
 
 
 @admin.register(GameTier)
@@ -73,3 +78,8 @@ class ServerVariableAdmin(admin.ModelAdmin):
 
 def template_extra_info(request):
     return None
+
+
+def get_api_uri():
+    host_address = settings.CSRF_TRUSTED_ORIGINS[0] if settings.CSRF_TRUSTED_ORIGINS else 'http://localhost:8000'
+    return host_address
