@@ -22,13 +22,13 @@ def new_aes_256_cbc():
 class Backer(models.Model):
     url = models.URLField(
         blank=False, unique=True,
-        help_text='URL of the person associated with this code (Patreon.com personal page)')
+        help_text='URL of the person associated with this code')
     email = models.EmailField(
         blank=True,
         help_text='Email of the person associated with this code')
     tier: GameTier = models.ForeignKey(
         GameTier, on_delete=models.RESTRICT, blank=True, null=True,
-        help_text='Game benefits tier (derived from Patreon.com tiers)')
+        help_text='Game benefits tier')
     display_name = models.CharField(
         max_length=100,
         help_text='Backer name displayed in the game UI')
@@ -38,27 +38,6 @@ class Backer(models.Model):
 
     def __str__(self):
         return '%s (%s)' % (self.display_name, self.url)
-
-    @staticmethod
-    def get_patreon(patreon_user, patreon_pledge):
-        # Find the user if already registered or create a new one if not
-        backer, was_created = Backer.objects.get_or_create(url=patreon_user.attribute('url'))
-
-        # Update backer information
-        backer.display_name = patreon_user.attribute('vanity') or patreon_user.attribute('full_name')
-        backer.email = patreon_user.attribute('email')
-
-        # Update the tier
-        try:
-            reward_id = patreon_pledge.json_data['relationships']['reward']['data']['id']
-            backer.tier = PatreonTier.objects.get(reward_id=reward_id).game_tier
-        except AttributeError:
-            backer.tier = None
-
-        # Save updated info
-        backer.save()
-
-        return backer
 
 
 class ArchivedCode(models.Model):
@@ -136,7 +115,7 @@ class GameCode(models.Model):
             if self.backer.tier is not None:
                 self.code_tier = self.backer.tier
             else:
-                raise ValidationError('A valid Patreon subscription is required')
+                raise ValidationError('A valid subscription is required')
 
         self.sign_the_code()
 

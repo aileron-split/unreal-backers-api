@@ -5,6 +5,30 @@ import config.models
 from config.models import GameTier, APIVariable, get_api_vars
 
 
+def refresh_access_token():
+    api_vars = get_api_vars()
+
+    refresh_token = api_vars.get('PATREON_REFRESH_TOKEN', '')
+    if not refresh_token:
+        return
+
+    client_id = api_vars.get('PATREON_CLIENT_ID', '')
+    client_secret = api_vars.get('PATREON_CLIENT_SECRET', '')
+
+    oauth_client = OAuth(client_id, client_secret)
+    tokens = oauth_client.refresh_token(refresh_token, get_patreon_redirect_uri())
+
+    if 'access_token' in tokens:
+        access_token = tokens['access_token']
+        api_token, _ = APIVariable.objects.get_or_create(key='PATREON_ACCESS_TOKEN')
+        api_token.value = access_token
+        api_token.save()
+        api_refresh_token, _ = APIVariable.objects.get_or_create(key='PATREON_REFRESH_TOKEN')
+        api_refresh_token.value = tokens.get('refresh_token', '')
+        api_refresh_token.save()
+        return access_token
+
+
 def get_patreon_api():
     api_vars = get_api_vars()
 
@@ -18,26 +42,8 @@ def get_patreon_api():
 
     if not patreon_api:
         # Try to refresh access token
-        refresh_token = api_vars.get('PATREON_REFRESH_TOKEN', '')
-        if not refresh_token:
-            info['error'] = 'Patreon API fail'
-            return info
-
-        client_id = api_vars.get('PATREON_CLIENT_ID', '')
-        client_secret = api_vars.get('PATREON_CLIENT_SECRET', '')
-
-        oauth_client = OAuth(client_id, client_secret)
-        tokens = oauth_client.refresh_token(refresh_token, get_patreon_redirect_uri())
-
-        if 'access_token' in tokens:
-            access_token = tokens['access_token']
-            api_token, _ = APIVariable.objects.get_or_create(key='PATREON_ACCESS_TOKEN')
-            api_token.value = access_token
-            api_token.save()
-            api_refresh_token, _ = APIVariable.objects.get_or_create(key='PATREON_REFRESH_TOKEN')
-            api_refresh_token.value = tokens.get('refresh_token', '')
-            api_refresh_token.save()
-
+        access_token = refresh_access_token()
+        if access_token:
             patreon_api = patreon.API(access_token=access_token)
         else:
             info['error'] = 'Patreon API fail'
