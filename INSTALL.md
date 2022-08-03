@@ -15,6 +15,7 @@
 - Set environment variables (or update the variables in the .env file):
 	
       POSTGRES_PASSWORD=
+      DJANGO_SUPERUSER_EMAIL=
       DJANGO_SUPERUSER_PASSWORD=
       ALLOWED_HOSTS=
       CSRF_TRUSTED_ORIGINS=
