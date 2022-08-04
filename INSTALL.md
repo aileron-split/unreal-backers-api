@@ -73,6 +73,11 @@ Once the plugin is installed and enabled you're all set to configure it in your 
 
 - Place the Backers Login widget anywhere in your game UI
 
+### Backers API Blueprint Nodes
+
+- Bind an event to OnBackerCodeUpdated event dispatcher to respond to backer code changes
+- Use the Backers Subsystem's variables to get the current backer login status and information
+
 ### Optionally: Import Game Tiers Table
 
 Optionally, you can download and import Game Tiers list to display user friendly tier names, and/or use Unreal Engine built-in localization system to translate tier labels to different languages.
@@ -81,7 +86,7 @@ Optionally, you can download and import Game Tiers list to display user friendly
 - Import the `GameTiersConfiguration.csv` file into Unreal using `BackersGameTiersStruct` as data table row type
 - Configure the Backers Login Widget to use the imported data table
 
-### Using the Backers Subsystem
+## Using the Backers Subsystem
 
 Once the user/backer is logged into the system with their crowdfunding platform account and have been assigned a game tier, the information is available anywhere within project's blueprints via the special Backers Subsystem blueprint node.
 
