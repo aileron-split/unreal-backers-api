@@ -56,7 +56,13 @@ Create Patreon API Key at https://www.patreon.com/portal/registration/register-c
 
 ## Configure Unreal Engine Plugin
 
+### Installing the Plugin
+
+To install the plugin into your project follow the instructions in the [Unreal Engine Documentation](https://docs.unrealengine.com/5.0/en-US/working-with-plugins-in-unreal-engine/#installingpluginsfromtheunrealenginemarketplace) pages. On the same documentation page you'll find the instructions on how to enable the plugin. 
+
 ### Project Settings
+
+Once the plugin is installed and enabled you're all set to configure it in your Project Settings.
 
 - Go to Project Settings > Plugins > Backers Plugin section
 - Configure your API URLs
@@ -65,15 +71,18 @@ Create Patreon API Key at https://www.patreon.com/portal/registration/register-c
 
 ### Backers Login Widget
 
-- Place Backers Login widget anywhere in your game UI
+- Place the Backers Login widget anywhere in your game UI
 
 ### Optionally: Import Game Tiers Table
 
-Optionally, you can download and import Game Tiers to 
+Optionally, you can download and import Game Tiers list to display user friendly tier names, and/or use Unreal Engine built-in localization system to translate tier labels to different languages.
 
 - Download .csv file from Game Tiers page in the API Admin interface
 - Import the `GameTiersConfiguration.csv` file into Unreal using `BackersGameTiersStruct` as data table row type
+- Configure the Backers Login Widget to use the imported data table
 
-### Using Backers Subsystem
+### Using the Backers Subsystem
 
-...
+Once the user/backer is logged into the system with their crowdfunding platform account and have been assigned a game tier, the information is available anywhere within project's blueprints via the special Backers Subsystem blueprint node.
+
+Complete [Documentation for the Backers Subsystem](https://github.com/aileron-split/unreal-backers-api/wiki) and other related nodes can be found in the [Wiki pages](https://github.com/aileron-split/unreal-backers-api/wiki) for the repository.
