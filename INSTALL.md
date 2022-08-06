@@ -21,7 +21,7 @@
       CSRF_TRUSTED_ORIGINS=
       HOST_API_PORT=
 
-- Run docker-compose the usual way, for example:
+- Run docker-compose the usual way for your hosting option, for example:
 
       docker-compose pull
       docker-compose up -d
@@ -41,6 +41,7 @@
 Create Patreon API Key at https://www.patreon.com/portal/registration/register-clients
 
 - Click Create Client
+- Fill in the Patreon API Client form 
 - Copy corresponding keys to Configuration > API Config in the Backers API Admin panel
 
 ### 3) Configure Tiers
@@ -49,9 +50,9 @@ Create Patreon API Key at https://www.patreon.com/portal/registration/register-c
 - Select all tiers, choose "Mirror selected to Game Tiers" action, and click "Go"
 - Edit Game Tier codes and labels
 
-### 4) Configure Version
+### 4) Create a Game Version
 
-- Create a version to generate version hash and key pair
+- Click Add Game Version and provide a Version string to generate the version hash and corresponding RSA key pair
 
 
 ## Configure Unreal Engine Plugin
