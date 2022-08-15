@@ -59,7 +59,9 @@ Create Patreon API Key at https://www.patreon.com/portal/registration/register-c
 
 ### Installing the Plugin
 
-To install the plugin into your project follow the instructions in the [Unreal Engine Documentation](https://docs.unrealengine.com/5.0/en-US/working-with-plugins-in-unreal-engine/#installingpluginsfromtheunrealenginemarketplace) pages. On the same documentation page you'll find the instructions on how to enable the plugin. 
+Once you acquired the plugin from the [Unreal Engine Marketplace](https://www.unrealengine.com/marketplace/en-US/product/backers-plugin) all you need to do is click the "Install to Engine" button for the plugin in your Epica Games Launcher. After download and install process is finished, you can open your Unreal Engine project and enable Backers in your Plugins Settings.
+
+If you need more detailed instructions you can find them in the [Unreal Engine Documentation](https://docs.unrealengine.com/5.0/en-US/working-with-plugins-in-unreal-engine/#installingpluginsfromtheunrealenginemarketplace) pages. On the same documentation page you'll find the instructions on how to enable the plugin too. 
 
 ### Project Settings
 
